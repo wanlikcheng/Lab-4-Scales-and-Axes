@@ -33,6 +33,8 @@ d3.csv('wealth-health-2014.csv', d=>{
         const popScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Population))
             .range([4, 20])
+
+        const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
         
         svg.selectAll("circle")
             .data(healthData)
@@ -41,26 +43,7 @@ d3.csv('wealth-health-2014.csv', d=>{
             .attr("cx", d=>xScale(d.Income))
             .attr("cy", d=>yScale(d.LifeExpectancy))
             .attr("r", d => popScale(d.Population))
-            .attr("fill", function(d) {
-                if(d.Region === "East Asia & Pacific") {
-                    return "blue";
-                }
-                else if(d.Region === "South Asia") {
-                    return "orange";
-                }
-                else if(d.Region === "America") {
-                    return "red";
-                }
-                else if(d.Region === "Sub-Saharan Africa") {
-                    return "lightcyan";
-                }
-                else if(d.Region === "Europe & Central Asia") {
-                    return "green";
-                }
-                else if(d.Region === "Middle East & North Africa") {
-                    return "gold";
-                }
-            })
+            .attr("fill", d => colorScale(d.Region))
             .attr("opacity", 0.6)
             .attr("stroke", "black")
             .on("mouseenter", (event, d) => {
@@ -115,15 +98,9 @@ d3.csv('wealth-health-2014.csv', d=>{
             .attr("alignment-baseline", "baseline")
             .text("Life Expectancy")
         
-        // encoding region
-        
-        const color = d3.scaleOrdinal(d3.schemeTableau10);
-
-        // tooltip
-        const legend = svg.append("g")
 
         legend.selectAll("rect")
-            .data(healthData)
+            .data(colorScale.domain)
             .enter()
             .append("rect")
             .attr("x", 600)

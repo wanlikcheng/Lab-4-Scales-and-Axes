@@ -99,15 +99,31 @@ d3.csv('wealth-health-2014.csv', d=>{
             .text("Life Expectancy")
         
 
-        legend.selectAll("rect")
-            .data(colorScale.domain)
+        const legend = svg.append("g");
+
+        legend.selectAll(".legend-color")
+            .data(colorScale.domain())
             .enter()
             .append("rect")
-            .attr("x", 600)
-            .attr("y", 500)
-            .width(10)
-            .height(10)
-            
+            .attr("x", width - 155)
+            .attr("y", function(d, i) {
+                return 350 + i * 10;
+            })
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr("fill", d => colorScale(d));
+        
+        legend.selectAll(".legend-text")
+            .data(colorScale.domain())
+            .enter()
+            .append("text")
+            .attr("x", width - 145)
+            .attr("y", function(d, i) {
+                return 350 + i * 10;
+            })
+            .attr("font-size", 12)
+            .attr('alignment-baseline', 'hanging')
+            .text(d => d);
 
 
     })
